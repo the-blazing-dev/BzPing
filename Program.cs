@@ -18,17 +18,23 @@ while (true)
     {
         PingReply reply = pingSender.Send(host, 1000);
 
+        var hostAndAddress = host;
+        if (host != reply.Address.ToString())
+        {
+            hostAndAddress += $"\t{reply.Address}";
+        }
+
         if (reply.Status == IPStatus.Success)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write($"{DateTime.Now}\t");
-            Console.WriteLine($"{host}\t{reply.Address}\t{reply.Status.ToString(),-10}\t{reply.RoundtripTime}ms");
+            Console.WriteLine($"{hostAndAddress,-10}\t{reply.Status.ToString(),-10}\t{reply.RoundtripTime}ms");
         }
         else
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write($"{DateTime.Now}\t");
-            Console.WriteLine($"{host}\t{reply.Address}\t{reply.Status}");
+            Console.WriteLine($"{hostAndAddress}\t{reply.Status}");
         }
     }
     catch (PingException e) when (e.InnerException is SocketException sex)
