@@ -12,30 +12,35 @@ if (args.Length != 1)
 string host = args[0];
 Ping pingSender = new Ping();
 
-try
+while (true)
 {
-    PingReply reply = pingSender.Send(host, 1000);
-
-    if (reply.Status == IPStatus.Success)
+    try
     {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write($"{DateTime.Now}\t");
-        Console.WriteLine($"{host}\t{reply.Address}\t{reply.Status.ToString(),-10}\t{reply.RoundtripTime}ms");
+        PingReply reply = pingSender.Send(host, 1000);
+
+        if (reply.Status == IPStatus.Success)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"{DateTime.Now}\t");
+            Console.WriteLine($"{host}\t{reply.Address}\t{reply.Status.ToString(),-10}\t{reply.RoundtripTime}ms");
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write($"{DateTime.Now}\t");
+            Console.WriteLine($"{host}\t{reply.Address}\t{reply.Status}");
+        }
     }
-    else
+    catch (PingException e) when (e.InnerException is SocketException sex)
     {
         Console.ForegroundColor = ConsoleColor.Red;
         Console.Write($"{DateTime.Now}\t");
-        Console.WriteLine($"{host}\t{reply.Address}\t{reply.Status}");
+        Console.WriteLine($"{host}\t{sex.Message}");
     }
-}
-catch (PingException e) when (e.InnerException is SocketException sex)
-{
-    Console.ForegroundColor = ConsoleColor.Red;
-    Console.Write($"{DateTime.Now}\t");
-    Console.WriteLine($"{host}\t{sex.Message}");
-}
-catch (PingException e)
-{
-    Console.WriteLine($"Ping failed: {e.Message} {e.InnerException}");
+    catch (PingException e)
+    {
+        Console.WriteLine($"Ping failed: {e.Message} {e.InnerException}");
+    }
+    
+    Thread.Sleep(1000);
 }
