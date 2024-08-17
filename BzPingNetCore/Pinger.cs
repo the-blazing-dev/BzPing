@@ -59,7 +59,7 @@ public class Pinger(Printer printer)
             // it's quite difficult to get IP data out of the request/response message
             // and it's possible that the HTTP request connects to a different IP
             // but for now it's better than nothing to do a dedicated DNS lookup
-            var hostIp = Dns.GetHostEntry(parsedUri.Host).AddressList.FirstOrDefault();
+            var hostIp = GetIp(parsedUri.Host);
 
             var sw = Stopwatch.StartNew();
             var request = new HttpRequestMessage(method, parsedUri);
@@ -88,21 +88,36 @@ public class Pinger(Printer printer)
     {
         try
         {
-            PingReply reply = _ping.Send(hostOrIp, 1000);
-
-            string ip = "";
-            if (hostOrIp != reply.Address.ToString())
+            // net framework "bug": reply.Address is null when there is a ping timeout
+            // so we do the lookup upfront
+            var ip = GetIp(hostOrIp);
+            if (ip == null)
             {
-                ip = reply.Address.ToString();
+                printer.PrintError(hostOrIp, null, IPStatus.Unknown.ToString());
+                return;
+            }
+            
+            PingReply? reply = _ping.Send(ip, 1000);
+            if (reply == null)
+            {
+                printer.PrintWarning(hostOrIp, null, "Missing PingReply");
+                return;
+            }
+
+            var ipStr = ip.ToString();
+            if (ipStr == hostOrIp)
+            {
+                // printing the IP 2 times does not make sense
+                ipStr = "";
             }
 
             if (reply.Status == IPStatus.Success)
             {
-                printer.PrintSuccess(hostOrIp, ip, reply.Status.ToString(), reply.RoundtripTime + "ms");
+                printer.PrintSuccess(hostOrIp, ipStr, reply.Status.ToString(), reply.RoundtripTime + "ms");
             }
             else
             {
-                printer.PrintError(hostOrIp, ip, reply.Status.ToString());
+                printer.PrintError(hostOrIp, ipStr, reply.Status.ToString());
             }
         }
         catch (PingException e) when (e.InnerException is SocketException sex)
@@ -113,5 +128,15 @@ public class Pinger(Printer printer)
         {
             printer.PrintError(hostOrIp, $"Ping failed: {e.Message} {e.InnerException?.Message}");
         }
+    }
+
+    private static IPAddress? GetIp(string host)
+    {
+        if (IPAddress.TryParse(host, out var ip))
+        {
+            return ip;
+        }
+        
+        return Dns.GetHostEntry(host).AddressList.FirstOrDefault();
     }
 }
