@@ -14,9 +14,16 @@ Ping pingSender = new Ping();
 
 while (true)
 {
+    ExecutePingToHost(pingSender, host);
+
+    Thread.Sleep(1000);
+}
+
+static void ExecutePingToHost(Ping ping, string host)
+{
     try
     {
-        PingReply reply = pingSender.Send(host, 1000);
+        PingReply reply = ping.Send(host, 1000);
 
         var hostAndAddress = host;
         if (host != reply.Address.ToString())
@@ -45,8 +52,6 @@ while (true)
     }
     catch (PingException e)
     {
-        Console.WriteLine($"Ping failed: {e.Message} {e.InnerException}");
+        Console.WriteLine($"{DateTime.Now}\t{host}\tPing failed: {e.Message} {e.InnerException}");
     }
-    
-    Thread.Sleep(1000);
 }
