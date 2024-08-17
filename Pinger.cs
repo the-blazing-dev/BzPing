@@ -12,7 +12,7 @@ public class Pinger(Printer printer)
 
     public void ExecutePingToHost(string hostOrIp)
     {
-        if (Uri.IsWellFormedUriString(hostOrIp, UriKind.Absolute))
+        if (IsHttpPing(hostOrIp))
         {
             ExecuteHttpPing(hostOrIp);
         }
@@ -22,18 +22,44 @@ public class Pinger(Printer printer)
         }
     }
 
+    private static bool IsHttpPing(string hostOrIp)
+    {
+        if (Uri.IsWellFormedUriString(hostOrIp, UriKind.Absolute))
+        {
+            return true;
+        }
+
+        var parts = hostOrIp.Split(' ');
+        if (parts.Length == 2 &&
+            Uri.IsWellFormedUriString(parts[1], UriKind.Absolute))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private void ExecuteHttpPing(string uri)
     {
+        var method = HttpMethod.Head;
         try
         {
+            // could be "http://something.com" or "GET http://something.com"
+            var uriParts = uri.Split(' ');
+            Uri parsedUri = new Uri(uriParts.Last());
+            
+            if (uriParts.Length == 2)
+            {
+                method = HttpMethod.Parse(uriParts[0]);
+            }
+            
             // it's quite difficult to get IP data out of the request/response message
             // and it's possible that the HTTP request connects to a different IP
             // but for now it's better than nothing to do a dedicated DNS lookup
-            var parsedUri = new Uri(uri);
             var hostIp = Dns.GetHostEntry(parsedUri.Host).AddressList.FirstOrDefault();
 
             var sw = Stopwatch.StartNew();
-            var request = new HttpRequestMessage(HttpMethod.Head, parsedUri);
+            var request = new HttpRequestMessage(method, parsedUri);
             var response = _httpClient.Send(request);
             sw.Stop();
 
@@ -51,7 +77,7 @@ public class Pinger(Printer printer)
         }
         catch (Exception e)
         {
-            printer.PrintError(uri, $"HTTP HEAD failed: {e.InnerException?.Message ?? e.Message}");
+            printer.PrintError(uri, $"HTTP {method.ToString().ToUpper()} failed: {e.InnerException?.Message ?? e.Message}");
         }
     }
 
