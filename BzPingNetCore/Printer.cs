@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace BzPing;
 
@@ -46,17 +47,18 @@ public class Printer
     private void PrintCore(string?[] text)
     {
         ClearLine();
-        
-        Console.Write(DateTime.Now);
+
+        var sb = new StringBuilder();
+        sb.Append(DateTime.Now);
         for (var i = 0; i < text.Length; i++)
         {
             var part = text[i];
             var maxTextLength = _maxTextLength.GetValueOrDefault(i, 0);
-            Console.Write("    "); // the output looks better with predictable 4 spaces instead of tab
-            Console.Write((part ?? "").PadRight(maxTextLength));
+            sb.Append("    "); // the output looks better with predictable 4 spaces instead of tab
+            sb.Append((part ?? "").PadRight(maxTextLength));
         }
-
-        Console.WriteLine();
+        
+        Console.WriteLine(sb);
         Console.ResetColor();
     }
 
