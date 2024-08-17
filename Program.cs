@@ -12,6 +12,10 @@ if (args.Length == 0)
 
 var hosts = args;
 var printer = new Printer();
+printer.PredictMaxTextLength(0, hosts.Max(x => x.Length));
+printer.PredictMaxTextLength(1, "255.255.255.255".Length);
+// there are longer ones, but they should not occur that often. And if they do, it's still rendedered
+printer.PredictMaxTextLength(2, IPStatus.TimedOut.ToString().Length); 
 var pinger = new Pinger(printer);
 
 while (true)

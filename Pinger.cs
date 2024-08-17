@@ -7,34 +7,34 @@ public class Pinger(Printer printer)
 {
     private readonly Ping _ping = new();
 
-    public void ExecutePingToHost(string host)
+    public void ExecutePingToHost(string hostOrIp)
     {
         try
         {
-            PingReply reply = _ping.Send(host, 1000);
+            PingReply reply = _ping.Send(hostOrIp, 1000);
 
-            var hostAndAddress = host;
-            if (host != reply.Address.ToString())
+            string ip = "";
+            if (hostOrIp != reply.Address.ToString())
             {
-                hostAndAddress += $"\t{reply.Address}";
+                ip = reply.Address.ToString();
             }
 
             if (reply.Status == IPStatus.Success)
             {
-                printer.PrintSuccess(hostAndAddress, reply.Status.ToString(), reply.RoundtripTime + "ms");
+                printer.PrintSuccess(hostOrIp, ip, reply.Status.ToString(), reply.RoundtripTime + "ms");
             }
             else
             {
-                printer.PrintError(hostAndAddress, reply.Status.ToString());
+                printer.PrintError(hostOrIp, ip, reply.Status.ToString());
             }
         }
         catch (PingException e) when (e.InnerException is SocketException sex)
         {
-            printer.PrintError(host, sex.Message);
+            printer.PrintError(hostOrIp, sex.Message);
         }
         catch (PingException e)
         {
-            printer.PrintError(host, $"Ping failed: {e.Message} {e.InnerException?.Message}");
+            printer.PrintError(hostOrIp, $"Ping failed: {e.Message} {e.InnerException?.Message}");
         }
     }
 }
