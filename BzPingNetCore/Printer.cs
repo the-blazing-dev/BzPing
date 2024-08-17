@@ -3,13 +3,23 @@ using System.Collections.Generic;
 
 namespace BzPing;
 
-public class Printer(Parameters parameters)
+public class Printer
 {
     private Dictionary<int, int> _maxTextLength = new();
+    private readonly Parameters _parameters;
+
+    public Printer(Parameters parameters)
+    {
+        _parameters = parameters;
+        if (_parameters.LiveMode)
+        {
+            Console.Clear();
+        }
+    }
 
     public void NotifyStartOfLoop()
     {
-        if (parameters.LiveMode)
+        if (_parameters.LiveMode)
         {
             Console.SetCursorPosition(0, 0);
         }
@@ -47,11 +57,12 @@ public class Printer(Parameters parameters)
         }
 
         Console.WriteLine();
+        Console.ResetColor();
     }
 
     private void ClearLine()
     {
-        if (parameters.LiveMode)
+        if (_parameters.LiveMode)
         {
             Console.SetCursorPosition(0, Console.CursorTop);
             Console.Write(new string(' ', Console.WindowWidth)); // Clear the line
