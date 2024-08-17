@@ -3,18 +3,21 @@
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
-if (args.Length != 1)
+if (args.Length == 0)
 {
     Console.WriteLine("Usage: BzPing <hostname or IP address>");
     return;
 }
 
-string host = args[0];
+var hosts = args;
 Ping pingSender = new Ping();
 
 while (true)
 {
-    ExecutePingToHost(pingSender, host);
+    foreach (var host in hosts)
+    {
+        ExecutePingToHost(pingSender, host);
+    }
 
     Thread.Sleep(1000);
 }
