@@ -11,7 +11,8 @@ if (args.Length == 0)
 }
 
 var hosts = args;
-var pinger = new Pinger();
+var printer = new Printer();
+var pinger = new Pinger(printer);
 
 while (true)
 {
