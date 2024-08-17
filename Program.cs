@@ -6,7 +6,7 @@ using BzPing;
 
 if (args.Length == 0)
 {
-    Console.WriteLine("Usage: BzPing <hostname or IP address>");
+    Console.WriteLine("Usage: BzPing <IP/hostname/URL> [<IP/hostname/URL>...]");
     return;
 }
 
