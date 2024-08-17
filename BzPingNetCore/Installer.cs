@@ -21,6 +21,15 @@ public static class Installer
             string processName = Process.GetCurrentProcess().ProcessName; // extension is missing here
             string currentFileName = Path.Combine(AppContext.BaseDirectory, processName + ".exe");
             string exePath = Path.Combine(appDirectory, "bzping.exe");
+            
+            var callingInstallOnInstalledApp = currentFileName == exePath;
+            if (callingInstallOnInstalledApp)
+            {
+                Console.WriteLine("You called --install on the already installed version.");
+                Console.WriteLine("If you try to update, you maybe need to call: ./bzping.exe --install");
+                return;
+            }
+
             // always copy so we can also update the app
             File.Copy(currentFileName, exePath, true);
 
