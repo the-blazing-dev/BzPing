@@ -132,11 +132,18 @@ public class Pinger(Printer printer)
 
     private static IPAddress? GetIp(string host)
     {
-        if (IPAddress.TryParse(host, out var ip))
+        try
         {
-            return ip;
+            if (IPAddress.TryParse(host, out var ip))
+            {
+                return ip;
+            }
+            
+            return Dns.GetHostAddresses(host).FirstOrDefault();
         }
-        
-        return Dns.GetHostEntry(host).AddressList.FirstOrDefault();
+        catch (SocketException ex) when (ex.SocketErrorCode == SocketError.HostNotFound)
+        {
+            return null;
+        }
     }
 }
