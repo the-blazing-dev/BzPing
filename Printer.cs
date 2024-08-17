@@ -1,8 +1,16 @@
 namespace BzPing;
 
-public class Printer
+public class Printer(Parameters parameters)
 {
     private Dictionary<int, int> _maxTextLength = new();
+
+    public void NotifyStartOfLoop()
+    {
+        if (parameters.LiveMode)
+        {
+            Console.SetCursorPosition(0, 0);
+        }
+    }
     
     public void PrintSuccess(params string?[] text)
     {
@@ -24,6 +32,8 @@ public class Printer
 
     private void PrintCore(string?[] text)
     {
+        ClearLine();
+        
         Console.Write(DateTime.Now);
         for (var i = 0; i < text.Length; i++)
         {
@@ -36,8 +46,23 @@ public class Printer
         Console.WriteLine();
     }
 
+    private void ClearLine()
+    {
+        if (parameters.LiveMode)
+        {
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(new string(' ', Console.WindowWidth)); // Clear the line
+            Console.SetCursorPosition(0, Console.CursorTop);
+        }
+    }
+
     public void PredictMaxTextLength(int paramsIndex, int maxLength)
     {
         _maxTextLength[paramsIndex] = maxLength;
+    }
+
+    public void PrintSpacer()
+    {
+        Console.WriteLine();
     }
 }
