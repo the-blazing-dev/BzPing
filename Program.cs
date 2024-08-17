@@ -25,6 +25,12 @@ while (true)
         pinger.ExecutePingToHost(host);
     }
 
+    if (hosts.Length > 3)
+    {
+        // spacer line
+        Console.WriteLine();
+    }
+    
     Thread.Sleep(1000);
 }
 
