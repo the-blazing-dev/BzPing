@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BzPing", "BzPing.csproj", "{500093B0-6182-43C3-B06E-5B83A0ED9681}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BzPingNetCore", "BzPingNetCore\BzPingNetCore.csproj", "{968F7B63-7B63-43DD-9973-7BC230E9E02D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +8,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{500093B0-6182-43C3-B06E-5B83A0ED9681}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{500093B0-6182-43C3-B06E-5B83A0ED9681}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{500093B0-6182-43C3-B06E-5B83A0ED9681}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{500093B0-6182-43C3-B06E-5B83A0ED9681}.Release|Any CPU.Build.0 = Release|Any CPU
+		{968F7B63-7B63-43DD-9973-7BC230E9E02D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{968F7B63-7B63-43DD-9973-7BC230E9E02D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{968F7B63-7B63-43DD-9973-7BC230E9E02D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{968F7B63-7B63-43DD-9973-7BC230E9E02D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
