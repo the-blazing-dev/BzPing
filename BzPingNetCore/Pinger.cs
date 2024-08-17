@@ -1,5 +1,8 @@
+using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
@@ -50,7 +53,7 @@ public class Pinger(Printer printer)
             
             if (uriParts.Length == 2)
             {
-                method = HttpMethod.Parse(uriParts[0]);
+                method = new HttpMethod(uriParts[0]);
             }
             
             // it's quite difficult to get IP data out of the request/response message
@@ -60,7 +63,7 @@ public class Pinger(Printer printer)
 
             var sw = Stopwatch.StartNew();
             var request = new HttpRequestMessage(method, parsedUri);
-            var response = _httpClient.Send(request);
+            var response = _httpClient.SendAsync(request).Result;
             sw.Stop();
 
             var statusCodeWithText = $"{(int)response.StatusCode} {response.StatusCode}";

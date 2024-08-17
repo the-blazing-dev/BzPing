@@ -1,17 +1,18 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace BzPing;
 
 public class Parameters
 {
-    public required List<string> Hosts { get; set; }
+    public List<string> Hosts { get; set; } = new();
     public bool LiveMode { get; set; }
     public bool? Spacer { get; set; }
     
     public static Parameters Parse(string[] args)
     {
-        var result = new Parameters
-        {
-            Hosts = args.ToList()
-        };
+        var result = new Parameters();
+        result.Hosts.AddRange(args);
 
         if (result.Hosts.Remove("--live"))
         {
