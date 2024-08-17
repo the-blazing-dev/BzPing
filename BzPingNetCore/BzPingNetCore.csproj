@@ -5,6 +5,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <AssemblyName>BzPing</AssemblyName>
+        <RootNamespace>BzPing</RootNamespace>
     </PropertyGroup>
 
 </Project>
