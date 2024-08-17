@@ -43,6 +43,9 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="..\BzPingNetCore\Installer.cs">
+          <Link>Installer.cs</Link>
+        </Compile>
         <Compile Include="..\BzPingNetCore\Parameters.cs">
           <Link>Parameters.cs</Link>
         </Compile>

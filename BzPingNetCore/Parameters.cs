@@ -8,11 +8,19 @@ public class Parameters
     public List<string> Hosts { get; set; } = new();
     public bool LiveMode { get; set; }
     public bool? Spacer { get; set; }
+    public bool IsInstall { get; set; }
     
     public static Parameters Parse(string[] args)
     {
         var result = new Parameters();
         result.Hosts.AddRange(args);
+
+        if (result.Hosts.Count == 1 &&
+            result.Hosts.Remove("--install"))
+        {
+            result.IsInstall = true;
+            return result;
+        }
 
         if (result.Hosts.Remove("--live"))
         {
