@@ -2,6 +2,7 @@
 
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using BzPing;
 
 if (args.Length == 0)
 {
@@ -10,51 +11,15 @@ if (args.Length == 0)
 }
 
 var hosts = args;
-Ping pingSender = new Ping();
+var pinger = new Pinger();
 
 while (true)
 {
     foreach (var host in hosts)
     {
-        ExecutePingToHost(pingSender, host);
+        pinger.ExecutePingToHost(host);
     }
 
     Thread.Sleep(1000);
 }
 
-static void ExecutePingToHost(Ping ping, string host)
-{
-    try
-    {
-        PingReply reply = ping.Send(host, 1000);
-
-        var hostAndAddress = host;
-        if (host != reply.Address.ToString())
-        {
-            hostAndAddress += $"\t{reply.Address}";
-        }
-
-        if (reply.Status == IPStatus.Success)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($"{DateTime.Now}\t");
-            Console.WriteLine($"{hostAndAddress,-10}\t{reply.Status.ToString(),-10}\t{reply.RoundtripTime}ms");
-        }
-        else
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write($"{DateTime.Now}\t");
-            Console.WriteLine($"{hostAndAddress}\t{reply.Status}");
-        }
-    }
-    catch (PingException e) when (e.InnerException is SocketException sex)
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.Write($"{DateTime.Now}\t");
-        Console.WriteLine($"{host}\t{sex.Message}");
-    }
-    catch (PingException e)
-    {
-        Console.WriteLine($"{DateTime.Now}\t{host}\tPing failed: {e.Message} {e.InnerException}");
-    }
-}
