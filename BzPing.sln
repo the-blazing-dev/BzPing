@@ -4,6 +4,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BzPingNetCore", "BzPingNetC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BzPingNetFramework", "BzPingNetFramework\BzPingNetFramework.csproj", "{4EA4D040-B5FE-4F9A-98F9-049A7319CF23}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFiles", "{A208CA9C-4731-4D7D-A629-FECCED1B71A1}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENCE.md = LICENCE.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
