@@ -34,4 +34,5 @@ You don't have to install it, you can also just work with the downloaded file!
 
 ## Good to know
 
-When using the "normal" view and more than 3 hosts, a spacer line is printed after the last host.
+- "Bz" is an abbreviation for "Blazing". So say hello to your blazing new ping utility!
+- When using the "normal" view and more than 3 hosts, a spacer line is printed after the last host.
