@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Threading;
+using System.Threading.Tasks;
 using BzPing;
 
 if (args.Length == 0)
@@ -24,14 +24,14 @@ while (true)
     
     foreach (var host in parameters.Hosts)
     {
-        pinger.ExecutePingToHost(host);
+        await pinger.ExecutePingToHostAsync(host);
     }
 
     if (parameters.Spacer.GetValueOrDefault())
     {
         printer.PrintSpacer();
     }
-    
-    Thread.Sleep(1000);
+
+    await Task.Delay(1000);
 }
 

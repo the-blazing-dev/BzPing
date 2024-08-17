@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace BzPing;
 
@@ -13,15 +14,15 @@ public class Pinger(Printer printer)
     private readonly Ping _ping = new();
     private readonly HttpClient _httpClient = new();
 
-    public void ExecutePingToHost(string hostOrIp)
+    public async Task ExecutePingToHostAsync(string hostOrIp)
     {
         if (IsHttpPing(hostOrIp))
         {
-            ExecuteHttpPing(hostOrIp);
+            await ExecuteHttpPingAsync(hostOrIp);
         }
         else
         {
-            ExecuteIcmpPing(hostOrIp);
+            await ExecuteIcmpPingAsync(hostOrIp);
         }
     }
 
@@ -42,7 +43,7 @@ public class Pinger(Printer printer)
         return false;
     }
 
-    private void ExecuteHttpPing(string uri)
+    private async Task ExecuteHttpPingAsync(string uri)
     {
         var method = HttpMethod.Head;
         try
@@ -59,11 +60,11 @@ public class Pinger(Printer printer)
             // it's quite difficult to get IP data out of the request/response message
             // and it's possible that the HTTP request connects to a different IP
             // but for now it's better than nothing to do a dedicated DNS lookup
-            var hostIp = GetIp(parsedUri.Host);
+            var hostIp = await GetIpAsync(parsedUri.Host);
 
             var sw = Stopwatch.StartNew();
             var request = new HttpRequestMessage(method, parsedUri);
-            var response = _httpClient.SendAsync(request).Result;
+            var response =  await _httpClient.SendAsync(request);
             sw.Stop();
 
             var statusCodeWithText = $"{(int)response.StatusCode} {response.StatusCode}";
@@ -84,20 +85,20 @@ public class Pinger(Printer printer)
         }
     }
 
-    private void ExecuteIcmpPing(string hostOrIp)
+    private async Task ExecuteIcmpPingAsync(string hostOrIp)
     {
         try
         {
             // net framework "bug": reply.Address is null when there is a ping timeout
             // so we do the lookup upfront
-            var ip = GetIp(hostOrIp);
+            var ip = await GetIpAsync(hostOrIp);
             if (ip == null)
             {
                 printer.PrintError(hostOrIp, null, IPStatus.Unknown.ToString());
                 return;
             }
             
-            PingReply? reply = _ping.Send(ip, 1000);
+            PingReply? reply = await _ping.SendPingAsync(ip, 1000);
             if (reply == null)
             {
                 printer.PrintWarning(hostOrIp, null, "Missing PingReply");
@@ -130,7 +131,7 @@ public class Pinger(Printer printer)
         }
     }
 
-    private static IPAddress? GetIp(string host)
+    private static async Task<IPAddress?> GetIpAsync(string host)
     {
         try
         {
@@ -139,7 +140,8 @@ public class Pinger(Printer printer)
                 return ip;
             }
             
-            return Dns.GetHostAddresses(host).FirstOrDefault();
+            var addresses = await Dns.GetHostAddressesAsync(host);
+            return addresses.FirstOrDefault();
         }
         catch (SocketException ex) when (ex.SocketErrorCode == SocketError.HostNotFound)
         {
