@@ -27,7 +27,7 @@ Examples:
 ## Installation
 - download the version you like from `/publish` directory
 - open command line at download directory
-- execute `bzping --install` (CMD) or `./bzping.exe --install' (Powershell)
+- execute `bzping --install` (CMD) or `./bzping.exe --install` (Powershell)
 - now you can use `bzping yourhost.com` from all your CLI windows!
 
 You don't have to install it, you can also just work with the downloaded file!
